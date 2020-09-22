@@ -39,9 +39,7 @@ class Game
     
     def take_turn(player)
         puts "#{player.name} Your turn !!!"
-        print "Enter a string: "
-        guess = gets.chomp
-        guess = gets.chomp while guess == ""
+        guess = get_guess
         player.guess = guess
         if valid_play?(player.guess)
             @fragment += player.guess
@@ -58,7 +56,21 @@ class Game
             return false
         end        
     end
+
+    def get_guess
+        print "Enter a char: "
+        guess = gets.chomp
+        while !valid_input?(guess)
+            print "Enter a char: "
+            guess = gets.chomp
+        end
+        guess
+    end
     
+    def valid_input?(guess)
+        return guess.length == 1
+    end
+
     def lost(player)
         return player.losses == MAX_LOSSES
     end
