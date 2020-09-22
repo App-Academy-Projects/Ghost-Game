@@ -3,12 +3,20 @@ require_relative 'Player.rb'
 
 DICTIONARY_FILE = "dictionary.txt"
 
+# print styles
+LINE_WIDTH = 55
+ROW_WIDTH = 10
+COL_WIDTH = 20
+
 class Game
-    attr_reader :previous_player, :current_player
+    attr_reader :previous_player, :current_player, :losses
     def initialize(players)
         @current_player, @previous_player = players
         @fragment = ""
         @dictionary = read_dictionary
+        @losses = {}
+        @losses[@current_player] = @current_player.losses_num
+        @losses[@previous_player] = @previous_player.losses_num
     end
 
     def read_dictionary
@@ -46,6 +54,22 @@ class Game
             take_turn(@current_player)
             next_player!
         end
+    end
+
+    def record(player)
+        
+    end
+
+    def display_standings
+        puts "-" * LINE_WIDTH
+        puts "#{"Players".ljust(ROW_WIDTH)}| #{@current_player.name.ljust(COL_WIDTH)}| #{@previous_player.name.ljust(COL_WIDTH)}|"
+        puts "-" * LINE_WIDTH
+        puts "#{"Losses".ljust(ROW_WIDTH)}| #{losses[@current_player].to_s.ljust(COL_WIDTH)}| #{losses[@previous_player].to_s.ljust(COL_WIDTH)}|"
+        puts "-" * LINE_WIDTH
+    end
+
+    def run
+        
     end
 end
 
