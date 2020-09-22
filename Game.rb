@@ -45,16 +45,17 @@ class Game
             @fragment += player.guess
             puts "Yeah!! It's a valid guess"
             puts
-            puts "Current fragment: '#{@fragment}'"
-            puts
         else
             player.alert_invalid_guess
             puts
             player.losses += 1
             puts "You are OUT '#{@current_player.name}'!!!" if lost(player)
             @fragment = ""
-            return false
-        end        
+        end
+        sleep(2)
+        system("clear")
+        puts "Current fragment: '#{@fragment}'"
+        puts
     end
 
     def get_guess
@@ -80,8 +81,8 @@ class Game
     end
     
     def play_round
-        take_turn(@current_player) if @current_player.losses < MAX_LOSSES
-        display_standings
+        take_turn(@current_player) if !lost(@current_player)
+        display_standings if !lost(@current_player)
         next_player!
     end
 
@@ -90,6 +91,12 @@ class Game
         losses_times = player.losses
         losses_times.times { |i| player_spells += GHOST[i]}
         player_spells
+    end
+
+    def welcome
+        system("clear")
+        puts "Let's play a round of Ghost!"
+        display_standings
     end
 
     def display_standings
@@ -101,18 +108,23 @@ class Game
         end
         puts "-" * LINE_WIDTH
     end
-
+    
     def winner(players)
-        players.each { |player| return player if player.losses < MAX_LOSSES }
+        players.each { |player| return player if !lost(player) }
     end
-
+    
+    def game_over?
+        @players.one? { |player| !lost(player) }
+    end
+    
     def run
-        display_standings
-        play_round while !@players.one? { |player| player.losses < MAX_LOSSES }
+        welcome
+        play_round while !game_over?
         puts "'#{winner(@players).name}' is the WINNER!"
     end
 end
 
 if __FILE__ == $PROGRAM_NAME
-    g = Game.new(["p1", "p2", "p3"])
+    g = Game.new(["John", "Mark", "David", "Jack"])
+    g.run
 end
