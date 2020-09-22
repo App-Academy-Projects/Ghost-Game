@@ -28,7 +28,7 @@ class Game
         if valid_play?(str)
             @fragment += str
             puts "Yeah!! It's a valid guess"
-            p @fragment
+            p "Current fragment: #{@fragment}"
         else
             puts "Sorry, you didn't get it :("
             return false
@@ -38,4 +38,14 @@ class Game
     def valid_play?(string)
         return @dictionary.any? { |word| word.start_with?(@fragment + string) }
     end
+    
+    def play_round
+        while take_turn(@current_player)
+            next_player!
+        end
+    end
+end
+
+if __FILE__ == $PROGRAM_NAME
+    g = Game.new(Player.new("p1"), Player.new("p2"))
 end
