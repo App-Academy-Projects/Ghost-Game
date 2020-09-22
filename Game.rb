@@ -34,4 +34,8 @@ class Game
             return false
         end        
     end
+    
+    def valid_play?(string)
+        return @dictionary.any? { |word| word.start_with?(@fragment + string) }
+    end
 end
