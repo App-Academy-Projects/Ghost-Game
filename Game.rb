@@ -20,4 +20,18 @@ class Game
     def next_player!
         @previous_player, @current_player = @current_player, @previous_player
     end
+    
+    def take_turn(player)
+        puts "#{player.name} Your turn !!!"
+        print "Enter a string: "
+        str = gets.chomp
+        if valid_play?(str)
+            @fragment += str
+            puts "Yeah!! It's a valid guess"
+            p @fragment
+        else
+            puts "Sorry, you didn't get it :("
+            return false
+        end        
+    end
 end
