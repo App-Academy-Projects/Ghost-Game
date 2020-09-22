@@ -7,6 +7,7 @@ DICTIONARY_FILE = "dictionary.txt"
 LINE_WIDTH = 55
 ROW_WIDTH = 10
 COL_WIDTH = 20
+GHOST = "GHOST"
 
 class Game
     attr_reader :previous_player, :current_player, :losses
@@ -57,7 +58,10 @@ class Game
     end
 
     def record(player)
-        
+        player_spells = ""
+        losses_times = losses[player]
+        losses_times.times { |i| player_spells += GHOST[i]}
+        player_spells
     end
 
     def display_standings
@@ -69,7 +73,7 @@ class Game
     end
 
     def run
-        
+        play_round
     end
 end
 
