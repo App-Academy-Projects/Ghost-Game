@@ -24,13 +24,15 @@ class Game
     def take_turn(player)
         puts "#{player.name} Your turn !!!"
         print "Enter a string: "
-        str = gets.chomp
-        if valid_play?(str)
-            @fragment += str
+        player.guess = gets.chomp
+        if valid_play?(player.guess)
+            @fragment += player.guess
             puts "Yeah!! It's a valid guess"
+            p
             p "Current fragment: #{@fragment}"
+            p
         else
-            puts "Sorry, you didn't get it :("
+            player.alert_invalid_guess
             return false
         end        
     end
@@ -40,7 +42,8 @@ class Game
     end
     
     def play_round
-        while take_turn(@current_player)
+        while true
+            take_turn(@current_player)
             next_player!
         end
     end
