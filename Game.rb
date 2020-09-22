@@ -10,14 +10,11 @@ COL_WIDTH = 20
 GHOST = "GHOST"
 
 class Game
-    attr_reader :previous_player, :current_player, :losses
+    attr_reader :previous_player, :current_player
     def initialize(players)
         @current_player, @previous_player = players
         @fragment = ""
         @dictionary = read_dictionary
-        @losses = {}
-        @losses[@current_player] = @current_player.losses_num
-        @losses[@previous_player] = @previous_player.losses_num
     end
 
     def read_dictionary
@@ -33,15 +30,21 @@ class Game
     def take_turn(player)
         puts "#{player.name} Your turn !!!"
         print "Enter a string: "
-        player.guess = gets.chomp
+        guess = gets.chomp
+        guess = gets.chomp while guess == ""
+        player.guess = guess
         if valid_play?(player.guess)
             @fragment += player.guess
             puts "Yeah!! It's a valid guess"
-            p
-            p "Current fragment: #{@fragment}"
-            p
+            puts
+            puts "Current fragment: '#{@fragment}'"
+            puts
         else
             player.alert_invalid_guess
+            puts
+            player.losses += 1
+            puts "#{@current_player.name} You are a '#{record(@current_player)}'"
+            @fragment = ""
             return false
         end        
     end
@@ -51,15 +54,14 @@ class Game
     end
     
     def play_round
-        while true
-            take_turn(@current_player)
-            next_player!
-        end
+        display_standings
+        take_turn(@current_player)
+        next_player!
     end
 
     def record(player)
         player_spells = ""
-        losses_times = losses[player]
+        losses_times = player.losses
         losses_times.times { |i| player_spells += GHOST[i]}
         player_spells
     end
@@ -68,12 +70,12 @@ class Game
         puts "-" * LINE_WIDTH
         puts "#{"Players".ljust(ROW_WIDTH)}| #{@current_player.name.ljust(COL_WIDTH)}| #{@previous_player.name.ljust(COL_WIDTH)}|"
         puts "-" * LINE_WIDTH
-        puts "#{"Losses".ljust(ROW_WIDTH)}| #{losses[@current_player].to_s.ljust(COL_WIDTH)}| #{losses[@previous_player].to_s.ljust(COL_WIDTH)}|"
+        puts "#{"Losses".ljust(ROW_WIDTH)}| #{@current_player.losses.to_s.ljust(COL_WIDTH)}| #{@previous_player.losses.to_s.ljust(COL_WIDTH)}|"
         puts "-" * LINE_WIDTH
     end
 
     def run
-        play_round
+        play_round while @current_player.losses < 5 && @previous_player.losses < 5
     end
 end
 
