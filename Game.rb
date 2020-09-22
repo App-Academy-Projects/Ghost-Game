@@ -6,6 +6,8 @@ DICTIONARY_FILE = "dictionary.txt"
 # print styles
 LINE_WIDTH = 22
 ROW_WIDTH = 10
+
+MAX_LOSSES = 5
 GHOST = "GHOST"
 
 class Game
@@ -51,18 +53,22 @@ class Game
             player.alert_invalid_guess
             puts
             player.losses += 1
-            puts "You are OUT '#{@current_player.name}'!!!"
+            puts "You are OUT '#{@current_player.name}'!!!" if lost(player)
             @fragment = ""
             return false
         end        
     end
     
+    def lost(player)
+        return player.losses == MAX_LOSSES
+    end
+
     def valid_play?(string)
         return @dictionary.any? { |word| word.start_with?(@fragment + string) }
     end
     
     def play_round
-        take_turn(@current_player) if @current_player.losses < 5
+        take_turn(@current_player) if @current_player.losses < MAX_LOSSES
         display_standings
         next_player!
     end
@@ -84,9 +90,14 @@ class Game
         puts "-" * LINE_WIDTH
     end
 
+    def winner(players)
+        players.each { |player| return player if player.losses < MAX_LOSSES }
+    end
+
     def run
         display_standings
-        play_round while !@players.one? { |player| player.losses < 5 }
+        play_round while !@players.one? { |player| player.losses < MAX_LOSSES }
+        puts "'#{winner(@players).name}' is the WINNER!"
     end
 end
 
